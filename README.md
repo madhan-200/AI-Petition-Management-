@@ -248,17 +248,17 @@ npm run build
 
 ## 🎨 Screenshots
 
-### Citizen Portal
+### Citizen Dashboard
 ![Citizen Dashboard](docs/screenshots/citizen-dashboard.png)
-*Submit petitions, track status, and chat with AI assistant*
+*Track your petitions with real-time status updates and timeline visualization*
 
-### Officer Portal
-![Officer Dashboard](docs/screenshots/officer-dashboard.png)
-*Manage assigned petitions and update status*
+### Petition Submission Form
+![Petition Submission](docs/screenshots/petition-submission.png)
+*Submit petitions with AI-powered classification and file upload support*
 
-### Admin Dashboard
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
-*View analytics and manage departments*
+### AI Chatbot Assistant
+![AI Chatbot](docs/screenshots/ai-chatbot.png)
+*Get instant help from Gemini-powered AI assistant*
 
 ---
 
