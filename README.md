@@ -1,272 +1,398 @@
-# AI Petition & Grievance Management System
+# 🤖 AI Petition & Grievance Management System
 
-A full-stack AI-powered platform for managing citizen petitions with automated classification, duplicate detection, and SLA monitoring.
+An intelligent petition management platform powered by Google Gemini AI, featuring automatic classification, duplicate detection, and real-time status tracking.
 
-## 🚀 Features
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-### Core Functionality
-- ✅ **AI-Powered Classification**: Automatic department routing using Google Gemini
-- ✅ **Urgency Prediction**: AI-based priority assessment (LOW/MEDIUM/HIGH/CRITICAL)
-- ✅ **Duplicate Detection**: Vector similarity using ChromaDB and Gemini embeddings
-- ✅ **Status Tracking**: Complete workflow from submission to resolution
-- ✅ **SLA Monitoring**: Automated reminders and escalations via Celery
-- ✅ **Email Notifications**: Status updates sent to citizens
-- ✅ **File Uploads**: Support for petition attachments
-- ✅ **Role-Based Access**: Citizen, Officer, and Admin portals
+## 🌟 Features
 
-### Technology Stack
-**Backend:**
-- Django 5.2 + Django REST Framework
-- Waitress (Production WSGI server)
-- Google Gemini AI (gemini-2.0-flash)
-- ChromaDB (Vector database)
-- Celery + Redis (Background tasks)
-- SQLite (Database)
+### 🤖 AI-Powered Intelligence
+- **Smart Classification**: Automatically categorizes petitions into 8 departments using Google Gemini 2.0 Flash
+- **Urgency Detection**: AI predicts urgency levels (LOW, MEDIUM, HIGH, CRITICAL)
+- **Duplicate Detection**: ChromaDB vector similarity prevents duplicate submissions
+- **AI Chatbot**: Real-time assistance powered by Gemini
 
-**Frontend:**
-- React 19 + TypeScript
-- Vite 7 (Build tool)
-- TailwindCSS 3 (Styling)
-- Redux Toolkit (State management)
-- React Router DOM (Navigation)
+### 📊 Complete Workflow Management
+- **Status Tracking**: Full lifecycle from submission to resolution
+- **SLA Monitoring**: Automated reminders via Celery Beat
+- **Email Notifications**: Real-time updates to citizens
+- **File Uploads**: Support for multiple attachments
 
-## 📋 Prerequisites
+### 🎨 Modern User Interface
+- **Citizen Portal**: Submit petitions, track status, chat with AI
+- **Officer Portal**: Manage assigned petitions, update status
+- **Admin Dashboard**: Analytics, department management, overview
 
+### 🗄️ Hybrid Database Architecture
+- **SQLite**: Django internals (sessions, admin)
+- **MongoDB**: Application data with automatic sync
+- **ChromaDB**: Vector embeddings for similarity search
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
 - Python 3.12+
 - Node.js 18+
-- Redis (for Celery)
+- MongoDB (optional, for MongoDB features)
 - Google Gemini API Key
 
-## 🛠️ Installation
-
-### 1. Clone Repository
+### 1️⃣ Clone Repository
 ```bash
-git clone <repository-url>
-cd AIPetition
+git clone https://github.com/madhan-200/AI-Petition-Management-.git
+cd AI-Petition-Management-
 ```
 
-### 2. Backend Setup
+### 2️⃣ Backend Setup
 ```bash
 cd backend
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Create .env file
+# Configure environment
 cp .env.example .env
 # Edit .env and add your GOOGLE_API_KEY
 
 # Run migrations
-python manage.py makemigrations
 python manage.py migrate
 
 # Create superuser (optional)
 python manage.py createsuperuser
 
-# Collect static files
-python manage.py collectstatic --noinput
+# Start server
+python run_waitress.py
 ```
 
-### 3. Frontend Setup
+Backend will run at: **http://localhost:8000**
+
+### 3️⃣ Frontend Setup
 ```bash
 cd frontend
 
 # Install dependencies
 npm install
 
-# Build for production
-npm run build
-```
-
-## 🚀 Running the Application
-
-### Development Mode
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-python run_waitress.py
-```
-Server runs on: `http://localhost:8000`
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
+# Start development server
 npm run dev
 ```
-Dev server runs on: `http://localhost:5173`
 
-**Terminal 3 - Celery Worker (Optional):**
-```bash
-cd backend
-celery -A config worker -l info
-```
+Frontend will run at: **http://localhost:5173**
 
-**Terminal 4 - Celery Beat (Optional):**
-```bash
-cd backend
-celery -A config beat -l info
-```
+---
 
-### Production Deployment
+## 🔑 Environment Variables
 
-1. **Configure Environment Variables:**
+Create `backend/.env` file:
+
 ```env
-GOOGLE_API_KEY=your_gemini_api_key
-SECRET_KEY=your_secret_key_here
-DEBUG=False
+# Google Gemini API Key (Required)
+GOOGLE_API_KEY=your_google_gemini_api_key_here
+
+# Django Settings
+DEBUG=True
+SECRET_KEY=your_django_secret_key_here
+
+# Email Configuration (Optional)
+EMAIL_HOST_USER=your_email@gmail.com
+EMAIL_HOST_PASSWORD=your_app_password
+
+# MongoDB (Optional)
+MONGODB_URI=mongodb://localhost:27017
+
+# Redis (Optional - for Celery)
+CELERY_BROKER_URL=redis://localhost:6379/0
 ```
 
-2. **Set up Redis:**
-```bash
-# Install Redis
-# Windows: Download from https://redis.io/download
-# Linux: sudo apt-get install redis-server
-# macOS: brew install redis
+**Get Google Gemini API Key:** [Google AI Studio](https://makersuite.google.com/app/apikey)
 
-# Start Redis
-redis-server
-```
-
-3. **Configure Email (Optional):**
-Edit `backend/config/settings.py`:
-```python
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-```
-
-4. **Deploy with Docker (Recommended):**
-```bash
-docker-compose up -d
-```
-
-## 📚 API Documentation
-
-### Authentication
-```http
-POST /api/users/register/
-POST /api/users/login/
-POST /api/users/token/refresh/
-```
-
-### Petitions
-```http
-GET    /api/petitions/          # List petitions
-POST   /api/petitions/          # Create petition
-GET    /api/petitions/{id}/     # Retrieve petition
-PATCH  /api/petitions/{id}/     # Update petition
-DELETE /api/petitions/{id}/     # Delete petition
-```
-
-### Example: Create Petition
-```bash
-curl -X POST http://localhost:8000/api/petitions/ \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "title=Broken Street Light" \
-  -F "description=Street light broken for 2 weeks" \
-  -F "uploaded_files=@photo1.jpg" \
-  -F "uploaded_files=@photo2.jpg"
-```
-
-## 🧪 Testing
-
-### Run Complete System Test
-```bash
-cd backend
-python test_complete_system.py
-```
-
-This tests:
-- User registration and authentication
-- AI department classification
-- AI urgency prediction
-- ChromaDB duplicate detection
-- Status updates and notifications
+---
 
 ## 📁 Project Structure
 
 ```
-AIPetition/
-├── backend/
-│   ├── config/              # Django settings
-│   ├── users/               # User authentication
-│   ├── petitions/           # Petition management
-│   ├── ai_agent/            # AI services
-│   │   ├── services.py      # Gemini classification
-│   │   └── duplicate_detection.py  # ChromaDB
-│   ├── run_waitress.py      # Production server
-│   └── manage.py
-├── frontend/
+AI-Petition-Management-/
+├── backend/                    # Django Backend
+│   ├── ai_agent/              # AI services (Gemini, ChromaDB)
+│   │   ├── services.py        # Classification & urgency prediction
+│   │   ├── chatbot.py         # AI chatbot service
+│   │   └── duplicate_detection.py  # ChromaDB integration
+│   ├── config/                # Django settings
+│   │   ├── settings.py        # Main configuration
+│   │   ├── mongodb.py         # MongoDB connection
+│   │   └── celery.py          # Celery configuration
+│   ├── users/                 # User management
+│   │   ├── models.py          # User model
+│   │   ├── serializers.py     # API serializers
+│   │   └── mongo_repository.py # MongoDB user operations
+│   ├── petitions/             # Petition management
+│   │   ├── models.py          # Petition, Department, SLA models
+│   │   ├── views.py           # API endpoints
+│   │   ├── tasks.py           # Celery tasks (SLA monitoring)
+│   │   └── mongo_repository.py # MongoDB petition operations
+│   ├── manage.py              # Django management
+│   ├── run_waitress.py        # Production server
+│   └── requirements.txt       # Python dependencies
+│
+├── frontend/                   # React Frontend
 │   ├── src/
-│   │   ├── pages/           # React pages
-│   │   ├── components/      # Reusable components
-│   │   ├── store/           # Redux store
-│   │   └── services/        # API client
-│   ├── package.json
-│   └── vite.config.ts
-└── README.md
+│   │   ├── components/        # Reusable components
+│   │   │   ├── Chatbot.tsx    # AI chatbot widget
+│   │   │   ├── Navbar.tsx     # Navigation
+│   │   │   └── Timeline.tsx   # Status timeline
+│   │   ├── pages/             # Page components
+│   │   │   ├── Login.tsx      # Login page
+│   │   │   ├── Signup.tsx     # Registration
+│   │   │   ├── Dashboard.tsx  # Citizen dashboard
+│   │   │   ├── SubmitPetition.tsx  # Petition form
+│   │   │   ├── OfficerDashboard.tsx # Officer portal
+│   │   │   └── AdminDashboard.tsx   # Admin portal
+│   │   ├── store/             # Redux state management
+│   │   │   ├── authSlice.ts   # Authentication state
+│   │   │   └── store.ts       # Redux store
+│   │   ├── services/          # API services
+│   │   │   └── api.ts         # Axios configuration
+│   │   └── App.tsx            # Main app component
+│   ├── package.json           # Node dependencies
+│   └── vite.config.ts         # Vite configuration
+│
+├── .gitignore                 # Git ignore rules
+├── README.md                  # This file
+└── SECURITY_SETUP.md          # Security guidelines
 ```
 
-## 🔑 Key Features Explained
+---
 
-### AI Classification
-Petitions are automatically classified into departments:
-- Roads & Transport
-- Electricity
-- Water Supply
-- Sanitation
-- Police
-- Health
-- Education
-- General
+## 🎯 API Endpoints
 
-### Duplicate Detection
-Uses vector embeddings to detect similar petitions:
-1. Generate embedding for new petition
-2. Query ChromaDB for similar petitions
-3. Flag if similarity > 85%
+### Authentication
+- `POST /api/users/register/` - User registration
+- `POST /api/users/login/` - Login (returns JWT tokens)
 
-### SLA Monitoring
-Celery Beat runs hourly to check:
-- SLA violations (overdue petitions)
-- SLA warnings (< 2 hours remaining)
-- Sends email notifications to officers
+### Petitions
+- `GET /api/petitions/` - List petitions (filtered by role)
+- `POST /api/petitions/` - Create petition (with AI classification)
+- `GET /api/petitions/{id}/` - Get petition details
+- `PUT /api/petitions/{id}/` - Update petition status
+- `DELETE /api/petitions/{id}/` - Delete petition
 
-### Notifications
-- **Status Updates**: Email sent to citizen when status changes
-- **SLA Alerts**: Email sent to officers for violations
-- **Console Backend**: Development mode logs emails to console
+### AI Services
+- `POST /api/ai/chat/` - Chatbot conversation
+- `GET /api/ai/chat/help/` - Get help topics
 
-## 🐛 Troubleshooting
+---
 
-### Gemini API Errors
-- Ensure `GOOGLE_API_KEY` is set in `.env`
-- Check API quota at https://console.cloud.google.com
-- Verify model name is correct (`gemini-2.0-flash`)
+## 🧪 Testing
 
-### ChromaDB Issues
-- ChromaDB data stored in `backend/chroma_data/`
-- Delete directory to reset: `rm -rf chroma_data/`
+### Backend Tests
+```bash
+cd backend
 
-### Celery Not Running
-- Ensure Redis is running: `redis-cli ping` should return `PONG`
-- Check Celery logs for errors
-- Verify `CELERY_BROKER_URL` in settings
+# Test MongoDB integration
+python test_mongodb.py
+
+# Test complete system
+python test_complete_system.py
+
+# Run Django tests
+python manage.py test
+```
+
+### Frontend Tests
+```bash
+cd frontend
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Framework**: Django 5.2.8, Django REST Framework
+- **AI/ML**: Google Gemini 2.0 Flash, LangChain, ChromaDB
+- **Database**: SQLite, MongoDB (pymongo)
+- **Task Queue**: Celery, Redis
+- **Server**: Waitress WSGI
+- **Authentication**: JWT (djangorestframework-simplejwt)
+
+### Frontend
+- **Framework**: React 18, TypeScript
+- **State Management**: Redux Toolkit
+- **Styling**: TailwindCSS
+- **Build Tool**: Vite
+- **HTTP Client**: Axios
+- **Routing**: React Router v6
+
+### AI & ML
+- **LLM**: Google Gemini 2.0 Flash
+- **Embeddings**: Gemini embedding-001
+- **Vector DB**: ChromaDB
+- **Framework**: LangChain
+
+---
+
+## 🎨 Screenshots
+
+### Citizen Portal
+![Citizen Dashboard](docs/screenshots/citizen-dashboard.png)
+*Submit petitions, track status, and chat with AI assistant*
+
+### Officer Portal
+![Officer Dashboard](docs/screenshots/officer-dashboard.png)
+*Manage assigned petitions and update status*
+
+### Admin Dashboard
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+*View analytics and manage departments*
+
+---
+
+## 🔒 Security
+
+- ✅ JWT authentication with token refresh
+- ✅ Password hashing (Django's PBKDF2)
+- ✅ CORS configuration
+- ✅ Environment variable protection
+- ✅ `.gitignore` for sensitive files
+- ✅ SQL injection prevention (Django ORM)
+- ✅ XSS protection
+
+**See [SECURITY_SETUP.md](SECURITY_SETUP.md) for detailed security guidelines.**
+
+---
+
+## 📊 Database Schema
+
+### User Model
+- `id`, `username`, `email`, `password`, `role` (CITIZEN/OFFICER/ADMIN)
+- `is_active`, `is_staff`, `date_joined`
+
+### Petition Model
+- `id`, `title`, `description`, `citizen`, `department`
+- `status` (SUBMITTED/UNDER_REVIEW/ASSIGNED/IN_PROGRESS/RESOLVED/REJECTED/CLOSED)
+- `urgency` (LOW/MEDIUM/HIGH/CRITICAL)
+- `is_duplicate`, `created_at`, `updated_at`
+
+### Department Model
+- `id`, `name`, `description`, `sla_hours`
+
+### Attachment Model
+- `id`, `petition`, `file`, `uploaded_at`
+
+---
+
+## 🚀 Deployment
+
+### Option 1: Heroku
+```bash
+heroku create ai-petition-system
+git push heroku main
+heroku run python manage.py migrate
+```
+
+### Option 2: Docker
+```bash
+docker-compose up -d
+```
+
+### Option 3: Manual Deployment
+1. Set up production database (PostgreSQL/MongoDB Atlas)
+2. Configure email service (SMTP, SendGrid)
+3. Set up Redis for Celery
+4. Build frontend: `npm run build`
+5. Collect static files: `python manage.py collectstatic`
+6. Run with Gunicorn/Waitress
+
+**See deployment guides in `docs/` folder.**
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 ## 📝 License
 
-MIT License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Contributors
+---
 
-- AI Petition Team
+## 👥 Authors
+
+- **Madhan** - *Initial work* - [madhan-200](https://github.com/madhan-200)
+
+---
 
 ## 🙏 Acknowledgments
 
-- Google Gemini AI
-- ChromaDB
-- Django & React communities
+- [Google Gemini AI](https://ai.google.dev/) for AI capabilities
+- [ChromaDB](https://www.trychroma.com/) for vector similarity search
+- [Django](https://www.djangoproject.com/) & [React](https://reactjs.org/) communities
+- [TailwindCSS](https://tailwindcss.com/) for beautiful styling
+
+---
+
+## 📧 Support
+
+For support, email: support@aipetition.com or open an issue on GitHub.
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] SMS notifications (Twilio integration)
+- [ ] Mobile app (React Native)
+- [ ] Advanced analytics dashboard
+- [ ] Multi-language support
+- [ ] LangGraph multi-agent workflows
+- [ ] Real-time WebSocket updates
+- [ ] PDF report generation
+- [ ] API rate limiting
+
+---
+
+## ⭐ Star History
+
+If you find this project useful, please consider giving it a star! ⭐
+
+---
+
+**Made with ❤️ using Google Gemini AI**
+
+---
+
+## 📞 Quick Links
+
+- [Documentation](docs/)
+- [API Reference](docs/api.md)
+- [Deployment Guide](docs/deployment.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY_SETUP.md)
+- [Changelog](CHANGELOG.md)
+
+---
+
+*Last Updated: November 23, 2025*
