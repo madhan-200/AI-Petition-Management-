@@ -39,6 +39,14 @@ class Petition(models.Model):
     description = models.TextField()
     citizen = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='petitions')
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, related_name='petitions')
+    assigned_officer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='assigned_petitions',
+        limit_choices_to={'role': 'OFFICER'}
+    )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.SUBMITTED)
     urgency = models.CharField(max_length=20, choices=SLA.Urgency.choices, default=SLA.Urgency.LOW)
     is_duplicate = models.BooleanField(default=False, help_text="Flagged as potential duplicate")
@@ -55,3 +63,37 @@ class Attachment(models.Model):
 
     def __str__(self):
         return f"Attachment for {self.petition.id}"
+
+class ResolutionDocument(models.Model):
+    """Documents uploaded by officers as proof of resolution"""
+    petition = models.ForeignKey(Petition, on_delete=models.CASCADE, related_name='resolution_documents')
+    file = models.FileField(upload_to='resolutions/')
+    description = models.TextField(blank=True, help_text="Description of the resolution document")
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Resolution for Petition #{self.petition.id}"
+
+class AuditLog(models.Model):
+    """Track all actions performed on petitions"""
+    class Action(models.TextChoices):
+        CREATED = 'CREATED', 'Created'
+        STATUS_CHANGED = 'STATUS_CHANGED', 'Status Changed'
+        ASSIGNED = 'ASSIGNED', 'Assigned to Officer'
+        DOCUMENT_UPLOADED = 'DOCUMENT_UPLOADED', 'Document Uploaded'
+        UPDATED = 'UPDATED', 'Updated'
+    
+    petition = models.ForeignKey(Petition, on_delete=models.CASCADE, related_name='audit_logs')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    action = models.CharField(max_length=50, choices=Action.choices)
+    old_value = models.TextField(blank=True, help_text="Previous value (for changes)")
+    new_value = models.TextField(blank=True, help_text="New value (for changes)")
+    remarks = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f"{self.action} on Petition #{self.petition.id} by {self.user}"
